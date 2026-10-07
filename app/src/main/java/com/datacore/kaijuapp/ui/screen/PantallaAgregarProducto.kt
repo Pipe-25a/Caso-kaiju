@@ -1,5 +1,5 @@
 package com.datacore.kaijuapp.ui.screen
-
+import androidx.compose.*;
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
-// valor: lo que muestra el campo · onValueChange: avisa "el usuario escribió esto"
+
 OutlinedTextField(
     value = estado.titulo,
     onValueChange = viewModel::actualizarTitulo,

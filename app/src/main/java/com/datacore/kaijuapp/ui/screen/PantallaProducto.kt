@@ -13,16 +13,23 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.datacore.kaijuapp.model.Producto
+import com.datacore.kaijuapp.ui.components.ListaProducto
 // ListaEventos vive en ui.components: paquete distinto a ui.screen, así que
 // acá sí hace falta importarla explícitamente (a diferencia de TarjetaEvento
 // dentro de ListaEventos.kt, que comparte paquete con ella).
-import com.datacore.kaijuapp.ui.components.ListaProducto
-
 // datos de prueba: en la actividad, cada equipo los reemplaza por los de su caso
 private val listaDeEjemplo = listOf(
-    Producto(nombre = "Papas", fechaVencimiento = "Lun 22 sept", cantidad = "20"),
-    Producto(nombre = "lechuga", fechaVencimiento = "Vie 26 sept", cantidad = "10")
-)
+    Producto(
+        codigo ="",
+        nombre = "",
+        descripcion = "",
+        categoria = "",
+        precio = 0.0,
+        stockMax = 0,
+        stockMin =  0,
+        tipo = "",
+        detalle = ""
+    ))
 
 // TopAppBar todavía es una API experimental de Material3: Google la recomienda
 // para uso normal, pero se reserva el derecho a cambiar su firma más adelante.
@@ -32,13 +39,10 @@ private val listaDeEjemplo = listOf(
 fun PantallaProducto() {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Kaiju App") })
-        },
+            TopAppBar(title = { Text("Kaiju App") }) },
         floatingActionButton = {
             FloatingActionButton(onClick = { /* ir a agregar */ }) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar evento")
-            }
-        }
+                Icon(Icons.Default.Add, contentDescription = "Agregar Producto") } }
     ) { padding ->
         ListaProducto(
             productos = listaDeEjemplo,

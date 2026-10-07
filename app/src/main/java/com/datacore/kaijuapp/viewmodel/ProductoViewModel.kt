@@ -72,4 +72,3 @@ fun guardarProducto(): Boolean {
     _estadoFormulario.value = FormularioProductoEstado()  // limpia el formulario
     return true
 }
-}

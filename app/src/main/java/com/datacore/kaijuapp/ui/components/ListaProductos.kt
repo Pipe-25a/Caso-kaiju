@@ -7,14 +7,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.datacore.kaijuapp.model.Producto
 
-
 // TarjetaProducto no se importa: vive en este mismo paquete (ui.components),
 // y Kotlin no exige import entre archivos del mismo paquete.
 @Composable
 fun ListaProducto(productos: List<Producto>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
         items(productos) { producto ->
-            TarjetaProducto(nombre = producto.nombre, fechaVencimiento = producto.fechaVencimiento, cantidad = producto.cantidad)
+            TarjetaProducto(
+                codigo = producto.codigo,
+                nombre = producto.nombre,
+                descripcion = producto.descripcion,
+                categoria = producto.categoria,
+                precio = producto.precio,
+                stockMax = producto.stockMax,
+                stockMin = producto.stockMin,
+                tipo = producto.tipo,
+                detalles = producto.detalle
+                )
         }
     }
 }
