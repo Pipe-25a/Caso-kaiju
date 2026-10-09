@@ -1,5 +1,9 @@
 package com.datacore.kaijuapp.viewmodel
-
+/*
+En esta Parte hay un error pero no lo puedo encontar y claude me dice que tire todo
+pero no estoy seguro , lo deje como comentario por el momento
+ */
+/*
 import com.datacore.kaijuapp.model.FormularioProductoEstado
 import com.datacore.kaijuapp.model.Producto
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -69,3 +73,5 @@ fun guardarMovimiento(): Boolean {
     return true
 }
 }
+
+ */

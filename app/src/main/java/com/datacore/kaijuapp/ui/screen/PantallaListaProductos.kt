@@ -14,30 +14,23 @@ import androidx.compose.ui.Modifier
 import com.datacore.kaijuapp.model.Producto
 import com.datacore.kaijuapp.ui.components.ListaProducto
 
-private val listaDeEjemplo = listOf(
-    Producto("", nombre = "", descripcion = "", categoria = "", precio = 0.0, cantidad = 0, fechaVencimiento = "")
-
-)
-
-// TopAppBar todavía es una API experimental de Material3: Google la recomienda
-// para uso normal, pero se reserva el derecho a cambiar su firma más adelante.
-// Kotlin exige reconocer ese riesgo con @OptIn antes de dejar compilar.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaListaEventos() {
+fun PantallaListaProductos(
+    productos: List<Producto>,
+    onAgregar: () -> Unit
+) {
     Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("") })
-        },
+        topBar = { TopAppBar(title = { Text("Productos") }) },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /* ir a agregar */ }) {
+            FloatingActionButton(onClick = onAgregar) {
                 Icon(Icons.Default.Add, contentDescription = "Agregar producto")
             }
         }
-    ) { padding ->
+    ) { innerPadding ->
         ListaProducto(
-            productos = listaDeEjemplo,
-            modifier = Modifier.padding(padding)  // evita que el contenido quede tapado por la topBar
+            productos = productos,
+            modifier = Modifier.padding(innerPadding)
         )
     }
 }
