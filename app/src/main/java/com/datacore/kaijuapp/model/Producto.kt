@@ -10,5 +10,4 @@ data class Producto (
     val stockMax:Int,
     val tipo: String,
     val detalle:String
-    //detalle es un texto opcional para lo que depende del tipo: talla y color, lote o fecha de vencimiento.
 ){}

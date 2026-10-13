@@ -10,10 +10,8 @@ data class Moviminto (
     val motivo:String,
     val fecha:String,
     val usuario:String
-
 ){}
 */
-
 //Modifique esta parte pero decidi no borrar la anterior
 data class Movimiento(
     val id: String,
