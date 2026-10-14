@@ -1,5 +1,6 @@
 package com.datacore.kaijuapp.ui.screen
 
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,7 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.datacore.kaijuapp.model.Producto
 import com.datacore.kaijuapp.viewmodel.ProductoViewModel
 
-// Pantalla para eliminar un producto (se busca por código/id)
+// Pantalla para eliminar un producto (se busca por código)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaEliminarProducto(
@@ -89,4 +90,4 @@ private fun CampoTexto(
         keyboardOptions = KeyboardOptions(keyboardType = teclado),
         modifier = Modifier.fillMaxWidth()
     )
-}}
+}

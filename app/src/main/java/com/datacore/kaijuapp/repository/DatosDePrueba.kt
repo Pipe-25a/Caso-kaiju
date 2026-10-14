@@ -115,8 +115,22 @@ object DatosDePrueba {
         )
     )
     val usuarios: List<Usuario> = listOf(
-        Usuario(id = "1", nombre = "Jose", rol = "Administrador", clave = "admin123"),
-        Usuario(id = "2", nombre = "Miguel", rol = "Vendedor", clave ="ventas123" ),
-        Usuario(id = "3", nombre = "Daniel", rol = "EncargadoInventario", clave = "stock123")
+        Usuario(id = "1", nombre = "Jose", rol = "Administrador", clave = "admin1"),
+        Usuario(id = "2", nombre = "Miguel", rol = "Vendedor", clave ="ventas1" ),
+        Usuario(id = "3", nombre = "Daniel", rol = "Administrador", clave = "Admin2")
     )
+    val movimientos: List<Movimiento> = listOf(
+        Movimiento(
+            id = "1",
+            codigoProducto = "5",
+            tipo = "Sin Tipo",
+            cantidad = 10,
+            motivo = "Sin Detalle",
+            fecha = "12/10/2026",
+            usuario = "Vendedor"
+
+        )
+    )
+
+
 }
