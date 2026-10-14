@@ -78,4 +78,10 @@ class ProductoViewModel : ViewModel() {
         _estadoFormulario.value = FormularioProductoEstado() // limpia el formulario
         return producto
     }
+    fun eliminarProducto(): Producto? {
+
+    }
+    fun modificarProducto(): Producto? {
+
+    }
 }
