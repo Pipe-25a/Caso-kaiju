@@ -1,5 +1,6 @@
 package com.datacore.kaijuapp.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,35 +10,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-//tarjeta para la clase de movimiento
+//tarjeta para la clase de movimiento (ahora se puede tocar)
 @Composable
 fun TarjetaMovimiento(
-    id:String,
+    id: String,
     codigoProducto: String,
     tipo: String,
     cantidad: Int,
-    motivo:String,
-    fecha:String,
-    usuario:String
-){
+    motivo: String,
+    fecha: String,
+    usuario: String,
+    onClick: () -> Unit = {}
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 5.dp)
+            .padding(horizontal = 12.dp, vertical = 5.dp)
+            .clickable(onClick = onClick)
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
-            Text(text = id, fontWeight = FontWeight.Bold, color = Color.Gray)
-            Text(text = codigoProducto)
+            Text(text = "Movimiento #$id", fontWeight = FontWeight.Bold, color = Color.Gray)
+            Text(text = "Producto: $codigoProducto")
             Text(text = tipo)
             Text(text = "Cantidad: $cantidad")
-            Text(text = motivo)
             Text(text = fecha)
-            Text(text = usuario)
-
         }
     }
 }
-

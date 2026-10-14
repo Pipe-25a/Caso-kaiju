@@ -18,4 +18,6 @@ class InventarioViewModel : ViewModel() {
         InventarioRepository.agregarProducto(producto)
         _productos.value = InventarioRepository.obtenerTodo()
     }
+
+    fun eliminar(it: Producto) {}
 }

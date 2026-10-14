@@ -4,12 +4,26 @@ import androidx.lifecycle.ViewModel
 import com.datacore.kaijuapp.model.ErroresMovimiento
 import com.datacore.kaijuapp.model.FormularioMovimientoEstado
 import com.datacore.kaijuapp.model.Movimiento
+import com.datacore.kaijuapp.repository.MovimientoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class MovimientoViewModel : ViewModel() {
+
+    // ---- Lista de movimientos (para PantallaMovimiento) ----
+    private val _movimientos = MutableStateFlow(MovimientoRepository.obtenerTodo())
+    val movimientos: StateFlow<List<Movimiento>> = _movimientos.asStateFlow()
+
+    fun buscarPorId(id: String?): Movimiento? =
+        if (id == null) null else MovimientoRepository.buscarPorId(id)
+
+    fun agregarMovimiento(movimiento: Movimiento) {
+        MovimientoRepository.agregar(movimiento)
+        _movimientos.value = MovimientoRepository.obtenerTodo()
+    }
+    // ---- Formulario (para crear un movimiento) ----
     private val _estadoFormulario = MutableStateFlow(FormularioMovimientoEstado())
     val estadoFormulario: StateFlow<FormularioMovimientoEstado> = _estadoFormulario.asStateFlow()
     fun actualizarCodigoProducto(valor: String) = _estadoFormulario.update { it.copy(codigoProducto = valor) }
@@ -32,7 +46,6 @@ class MovimientoViewModel : ViewModel() {
             cantidad <= 0 -> "La cantidad debe ser mayor a 0"
             else -> null
         }
-
         _estadoFormulario.update {
             it.copy(
                 errores = ErroresMovimiento(
@@ -45,10 +58,8 @@ class MovimientoViewModel : ViewModel() {
                 )
             )
         }
-        return listOf(errorCodigoProducto, errorTipo, errorCantidad, errorMotivo, errorFecha, errorUsuario)
-            .all { it == null }
+        return listOf(errorCodigoProducto, errorTipo, errorCantidad, errorMotivo, errorFecha, errorUsuario).all { it == null }
     }
-
     fun crearMovimientoSiEsValido(): Movimiento? {
         if (!validarFormulario()) return null
         val estado = _estadoFormulario.value
@@ -59,8 +70,7 @@ class MovimientoViewModel : ViewModel() {
             cantidad = estado.cantidad.toInt(),
             motivo = estado.motivo.trim(),
             fecha = estado.fecha.trim(),
-            usuario = estado.usuario.trim()
-        )
+            usuario = estado.usuario.trim())
         _estadoFormulario.value = FormularioMovimientoEstado()
         return movimiento
     }
