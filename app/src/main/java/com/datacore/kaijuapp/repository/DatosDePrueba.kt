@@ -115,8 +115,8 @@ object DatosDePrueba {
         )
     )
     val usuarios: List<Usuario> = listOf(
-        Usuario(id = "1", nombre = "Jose", rol = "Administrador"),
-        Usuario(id = "2", nombre = "Miguel", rol = "Vendedor"),
-        Usuario(id = "3", nombre = "Daniel", rol = "EncargadoInventario")
+        Usuario(id = "1", nombre = "Jose", rol = "Administrador", clave = "1234"),
+        Usuario(id = "2", nombre = "Miguel", rol = "Vendedor", clave = "1234"),
+        Usuario(id = "3", nombre = "Daniel", rol = "EncargadoInventario", clave = "1234")
     )
 }

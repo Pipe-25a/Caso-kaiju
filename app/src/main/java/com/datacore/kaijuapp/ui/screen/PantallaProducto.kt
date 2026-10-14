@@ -18,13 +18,16 @@ import com.datacore.kaijuapp.ui.components.ListaProducto
 @Composable
 fun PantallaProducto(
     productos: List<Producto>,
+    puedeAgregar: Boolean,
     onAgregar: () -> Unit
 ) {
     Scaffold(
         topBar = { TopAppBar(title = { Text("Kaiju App") }) },
         floatingActionButton = {
-            FloatingActionButton(onClick = onAgregar) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar producto")
+            if (puedeAgregar) {
+                FloatingActionButton(onClick = onAgregar) {
+                    Icon(Icons.Default.Add, contentDescription = "Agregar producto")
+                }
             }
         }
     ) { innerPadding ->

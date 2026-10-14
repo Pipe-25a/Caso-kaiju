@@ -1,77 +1,72 @@
 package com.datacore.kaijuapp.viewmodel
-/*
-En esta Parte hay un error pero no lo puedo encontar y claude me dice que tire todo
-pero no estoy seguro , lo deje como comentario por el momento
- */
-/*
-import com.datacore.kaijuapp.model.FormularioProductoEstado
-import com.datacore.kaijuapp.model.Producto
+
+import androidx.lifecycle.ViewModel
+import com.datacore.kaijuapp.model.Usuario
+import com.datacore.kaijuapp.repository.DatosDePrueba
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import com.datacore.kaijuapp.*
-private val _estadoFormularioMovimiento = MutableStateFlow(FormularioMovimientoEstado())
-val estadoFormularioMovimiento: StateFlow<FormularioMovimientoEstado> = _estadoFormularioMovimiento.asStateFlow()
 
-fun actualizarId(Valor: String) = _estadoFormularioMovimiento.update { it.copy(id = Valor) }
-fun actualizarCodigoProducto(Valor: String) = _estadoFormularioMovimiento.update { it.copy(codigoProducto = Valor) }
-fun actualizarTipo(Valor: String) = _estadoFormularioMovimiento.update { it.copy(tipo = Valor) }
-fun actualizarCantida(Valor:Int)=_estadoFormularioMovimiento.update { it.copy(cantidad = Valor) }
-fun actualiarMotivo(Valor: String)= _estadoFormularioMovimiento.update { it.copy(Motivo = Valor) }
-fun actualizarFecha(Valor: String)=_estadoFormularioMovimiento.update {it.copy(fecha = Valor ) }
-fun actualizarUsuario(Valor: String)=_estadoFormularioMovimiento.update {it.copy(usuario = Valor ) }
+data class EstadoLogin(
+    val usuario: String = "",
+    val clave: String = "",
+    val errorUsuario: String? = null,
+    val errorClave: String? = null
+)
 
-//revisar aqui
-fun validarFormulario(): Boolean {
-    val estado = _estadoFormularioMovimiento.value
-    val errorCodigoProducto = if (estado.codigoProducto.isBlank()) "El código del producto es obligatorio" else null
-    val cantidadNumerica = estado.cantidad.toIntOrNull()
-    val errorTipo = if (estado.tipo.isBlank()) "El tipo es obligatorio" else null
-    val errorFecha = if (estado.fecha.isBlank()) "La fecha es obligatorio" else null
-    val errorMotivo = if (estado.motivo.isBlank()) "El motivo es obligatorio" else null
-    val errorUsuario = if (estado.usuario.isBlank()) "El usuario es obligatoria" else null
+class SesionViewModel : ViewModel() {
 
+    private val _usuarioActual = MutableStateFlow<Usuario?>(null)
+    val usuarioActual: StateFlow<Usuario?> = _usuarioActual.asStateFlow()
 
-    val errorCantidad = when {
-        estado.cantidad.isBlank() -> "La cantidad es obligatoria"
-        cantidadNumerica == null -> "La cantidad debe ser un número entero"
-        cantidadNumerica < 0 -> "La cantidad no puede ser negativa"
-        else -> null
+    private val _estadoLogin = MutableStateFlow(EstadoLogin())
+    val estadoLogin: StateFlow<EstadoLogin> = _estadoLogin.asStateFlow()
+
+    fun actualizarUsuario(valor: String) = _estadoLogin.update {
+        it.copy(usuario = valor, errorUsuario = null)
     }
 
-    // descripción y fecha de vencimiento son opcionales
-    _estadoFormulario.update {
-        it.copy(
-            errores = ErroresMovimiento(
-                errorCodigoProducto = errorCodigoProducto,
-                errorTipo = errorTipo,
-                errorFecha = errorFecha,
-                errorMotivo = errorMotivo,
-                errorCantidad = errorCantidad,
-                errorUsuario = errorUsuario
-            )
-        )
+    fun actualizarClave(valor: String) = _estadoLogin.update {
+        it.copy(clave = valor, errorClave = null)
     }
-    return listOf(errorCodigo, errorNombre, errorCategoria, errorPrecio, errorCantidad)
-        .all { it == null }
-}
-fun guardarMovimiento(): Boolean {
-    if (!validarFormulario()) return false
-    val estado = _estadoFormulario.value
-    val movimiento = Movimiento(
-        codigo = estado.codigo.trim(),
-        nombre = estado.nombre.trim(),
-        descripcion = estado.descripcion.ifBlank { "Sin descripción" },
-        categoria = estado.categoria.trim(),
-        precio = estado.precio.toDouble(),
-        cantidad = estado.cantidad.toInt(),
-        fechaVencimiento = estado.fechaVencimiento.ifBlank { "Sin vencimiento" }
-    )
-    _productos.update { it + producto }
-    _estadoFormulario.value = FormularioProductoEstado()  // limpia el formulario
-    return true
-}
-}
 
- */
+    fun iniciarSesion(): Boolean {
+        val estado = _estadoLogin.value
+        val nombre = estado.usuario.trim()
+
+        val errorUsuario = when {
+            nombre.isBlank() -> "Ingrese su usuario"
+            else -> DatosDePrueba.usuarios
+                .none { it.nombre.equals(nombre, ignoreCase = true) }
+                .let { noExiste -> if (noExiste) "Usuario no encontrado" else null }
+        }
+
+        val usuarioEncontrado = if (errorUsuario == null) {
+            DatosDePrueba.usuarios.first { it.nombre.equals(nombre, ignoreCase = true) }
+        } else null
+
+        val errorClave = when {
+            usuarioEncontrado == null -> null
+            estado.clave.isBlank() -> "Ingrese su clave"
+            estado.clave != usuarioEncontrado.clave -> "Clave incorrecta"
+            else -> null
+        }
+
+        if (errorUsuario != null || errorClave != null) {
+            _estadoLogin.update {
+                it.copy(errorUsuario = errorUsuario, errorClave = errorClave)
+            }
+            return false
+        }
+
+        _usuarioActual.value = usuarioEncontrado
+        _estadoLogin.value = EstadoLogin()
+        return true
+    }
+
+    fun cerrarSesion() {
+        _usuarioActual.value = null
+        _estadoLogin.value = EstadoLogin()
+    }
+}
