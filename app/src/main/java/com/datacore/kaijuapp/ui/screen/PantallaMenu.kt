@@ -24,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.datacore.kaijuapp.model.Producto
 import com.datacore.kaijuapp.notificaciones.NotificacionHelper
 import com.datacore.kaijuapp.repository.DatosDePrueba
 
@@ -32,6 +33,7 @@ import com.datacore.kaijuapp.repository.DatosDePrueba
 fun PantallaMenu(
     nombreUsuario: String,
     rol: String,
+    productos: List<Producto>,       // <-- NUEVO, en este mismo orden
     onCatalogo: () -> Unit,
     onAgregar: () -> Unit,
     onEliminar: () -> Unit,

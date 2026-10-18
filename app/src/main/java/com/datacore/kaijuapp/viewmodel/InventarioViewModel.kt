@@ -14,10 +14,18 @@ class InventarioViewModel : ViewModel() {
     private val _productos = MutableStateFlow(InventarioRepository.obtenerTodo())
     val productos: StateFlow<List<Producto>> = _productos.asStateFlow()
 
-    fun agregar(producto: Producto) {
-        InventarioRepository.agregarProducto(producto)
+    fun agregar(producto: Producto): Producto {
+        val nuevo = InventarioRepository.agregarProducto(producto)
         _productos.value = InventarioRepository.obtenerTodo()
+        return nuevo
     }
 
-    fun eliminar(it: Producto) {}
+    fun eliminar(producto: Producto) {
+        InventarioRepository.eliminarPorCodigo(producto.codigo) // si ya fue borrado, no pasa nada
+        _productos.value = InventarioRepository.obtenerTodo()
+    }
+    fun actualizar(producto: Producto) {
+        InventarioRepository.actualizarProducto(producto)
+        _productos.value = InventarioRepository.obtenerTodo()
+    }
 }

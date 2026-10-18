@@ -10,6 +10,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 17.0,
             stockMin = 1,
+            stockActual = 2,
             stockMax = 10,
             tipo = "CamisetaSinMangas",
             detalle = ""
@@ -21,6 +22,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 16.0,
             stockMin = 1,
+            stockActual = 6,
             stockMax = 10,
             tipo = "pantaloneslargos",
             detalle = ""
@@ -32,6 +34,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 14.0,
             stockMin = 1,
+            stockActual = 9,
             stockMax = 10,
             tipo = "PoleronconGorro",
             detalle = ""
@@ -43,6 +46,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 13.0,
             stockMin = 1,
+            stockActual = 8,
             stockMax = 10,
             tipo = "GuantesdeNieve",
             detalle = ""
@@ -54,6 +58,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 15.0,
             stockMin = 1,
+            stockActual = 7,
             stockMax = 10,
             tipo = "CalcetinesDeportivos",
             detalle = ""
@@ -65,6 +70,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 20.0,
             stockMin = 1,
+            stockActual = 5,
             stockMax = 10,
             tipo = "ShortsDeVerano",
             detalle = ""
@@ -76,6 +82,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 40.0,
             stockMin = 1,
+            stockActual = 9,
             stockMax = 10,
             tipo = "ZapatillasDeportivas",
             detalle = ""
@@ -87,6 +94,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 30.0,
             stockMin = 1,
+            stockActual = 7,
             stockMax = 10,
             tipo = "ZapatosFormales",
             detalle = ""
@@ -98,6 +106,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 20.0,
             stockMin = 1,
+            stockActual = 6,
             stockMax = 10,
             tipo = "BufandaLarga",
             detalle = ""
@@ -109,6 +118,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 10.0,
             stockMin = 1,
+            stockActual = 4,
             stockMax = 10,
             tipo = "GorroInvierno",
             detalle = ""

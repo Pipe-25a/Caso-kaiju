@@ -1,15 +1,18 @@
 package com.datacore.kaijuapp.navigation
 
+import com.datacore.kaijuapp.model.Producto
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.datacore.kaijuapp.notificaciones.NotificacionHelper
 import com.datacore.kaijuapp.ui.screen.PantallaAgregarProducto
 import com.datacore.kaijuapp.ui.screen.PantallaDetallesMovimiento
 import com.datacore.kaijuapp.ui.screen.PantallaEliminarProducto
@@ -33,6 +36,13 @@ fun AppNavHost() {
     val movimientos by movimientoViewModel.movimientos.collectAsState()
     val usuario by sesionViewModel.usuarioActual.collectAsState()
 
+    val context = LocalContext.current
+    // Recalcula la alerta del producto con menor stock con la lista YA actualizada
+    // (se usa .value y no `productos` porque este último aún tiene la lista vieja dentro del lambda)
+    val refrescarAlerta = {
+        NotificacionHelper.actualizarAlertaStock(context, inventarioViewModel.productos.value)
+    }
+
     NavHost(navController = navController, startDestination = Rutas.Login.ruta) {
 
         composable(Rutas.Login.ruta) {
@@ -51,6 +61,7 @@ fun AppNavHost() {
             PantallaMenu(
                 nombreUsuario = usuario?.nombre ?: "",
                 rol = usuario?.rol ?: "",
+                productos = productos,
                 onCatalogo = { navController.navigate(Rutas.Lista.ruta) },
                 onAgregar = { navController.navigate(Rutas.Agregar.ruta) },
                 onEliminar = { navController.navigate(Rutas.Eliminar.ruta) },
@@ -75,14 +86,28 @@ fun AppNavHost() {
 
         composable(Rutas.Agregar.ruta) {
             PantallaAgregarProducto(
-                onGuardar = { inventarioViewModel.agregar(it) },
+                onGuardar = {
+                    val nuevo = inventarioViewModel.agregar(it)
+                    NotificacionHelper.notificarAccion(
+                        context, "Producto agregado",
+                        "Se agregó el producto con ID: ${nuevo.codigo}"
+                    )
+                    refrescarAlerta()
+                },
                 onVolver = { navController.popBackStack() }
             )
         }
 
         composable(Rutas.Eliminar.ruta) {
             PantallaEliminarProducto(
-                onEliminar = { inventarioViewModel.eliminar(it) },
+                onEliminar = {
+                    inventarioViewModel.eliminar(it)
+                    NotificacionHelper.notificarAccion(
+                        context, "Producto eliminado",
+                        "Se eliminó el producto con ID: ${it.codigo}"
+                    )
+                    refrescarAlerta()
+                },
                 onVolver = { navController.popBackStack() }
             )
         }

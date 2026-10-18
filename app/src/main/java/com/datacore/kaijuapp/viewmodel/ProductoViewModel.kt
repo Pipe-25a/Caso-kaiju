@@ -1,7 +1,6 @@
 package com.datacore.kaijuapp.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.datacore.kaijuapp.model.ErroresProducto
 import com.datacore.kaijuapp.model.FormularioProductoEstado
 import com.datacore.kaijuapp.model.Producto
 import com.datacore.kaijuapp.repository.InventarioRepository
@@ -15,12 +14,16 @@ class ProductoViewModel : ViewModel() {
     private val _estadoFormulario = MutableStateFlow(FormularioProductoEstado())
     val estadoFormulario: StateFlow<FormularioProductoEstado> = _estadoFormulario.asStateFlow()
 
-    fun actualizarCodigo(valor: String) = _estadoFormulario.update { it.copy(codigo = valor) }
+    // Al escribir el código se limpia su error (si no, el mensaje rojo se queda pegado)
+    fun actualizarCodigo(valor: String) = _estadoFormulario.update {
+        it.copy(codigo = valor, errores = it.errores.copy(errorCodigo = null))
+    }
     fun actualizarNombre(valor: String) = _estadoFormulario.update { it.copy(nombre = valor) }
     fun actualizarDescripcion(valor: String) = _estadoFormulario.update { it.copy(descripcion = valor) }
     fun actualizarCategoria(valor: String) = _estadoFormulario.update { it.copy(categoria = valor) }
     fun actualizarPrecio(valor: String) = _estadoFormulario.update { it.copy(precio = valor) }
     fun actualizarStockMin(valor: String) = _estadoFormulario.update { it.copy(stockMin = valor) }
+    fun actualizarStockActual(valor: String) = _estadoFormulario.update { it.copy(stockActual = valor) }
     fun actualizarStockMax(valor: String) = _estadoFormulario.update { it.copy(stockMax = valor) }
     fun actualizarTipo(valor: String) = _estadoFormulario.update { it.copy(tipo = valor) }
     fun actualizarDetalle(valor: String) = _estadoFormulario.update { it.copy(detalle = valor) }
@@ -34,6 +37,7 @@ class ProductoViewModel : ViewModel() {
             categoria = p.categoria,
             precio = p.precio.toString(),
             stockMin = p.stockMin.toString(),
+            stockActual = p.stockActual.toString(),
             stockMax = p.stockMax.toString(),
             tipo = p.tipo,
             detalle = p.detalle
@@ -58,6 +62,8 @@ class ProductoViewModel : ViewModel() {
         val precio = estado.precio.replace(',', '.').toDoubleOrNull()
         val stockMin = estado.stockMin.toIntOrNull()
         val stockMax = estado.stockMax.toIntOrNull()
+        val stockActual = estado.stockActual.toIntOrNull()
+
         val errorNombre = if (estado.nombre.isBlank()) "El nombre es obligatorio" else null
         val errorCategoria = if (estado.categoria.isBlank()) "La categoría es obligatoria" else null
         val errorTipo = if (estado.tipo.isBlank()) "El tipo es obligatorio" else null
@@ -77,6 +83,13 @@ class ProductoViewModel : ViewModel() {
             stockMax < 0 -> "No puede ser negativo"
             stockMin != null && stockMax < stockMin -> "No puede ser menor al stock mínimo"
             else -> null }
+        val errorStockActual = when {
+            estado.stockActual.isBlank() -> "El stock actual es obligatorio"
+            stockActual == null -> "Debe ser un número entero"
+            stockActual < 0 -> "No puede ser negativo"
+            stockMax != null && stockActual > stockMax -> "No puede superar el stock máximo"
+            else -> null }
+
         // copy() para NO borrar el errorCodigo que pudo setear validarCodigo()
         _estadoFormulario.update {
             it.copy(
@@ -85,11 +98,14 @@ class ProductoViewModel : ViewModel() {
                     errorCategoria = errorCategoria,
                     errorPrecio = errorPrecio,
                     errorStockMin = errorStockMin,
+                    errorStockActual = errorStockActual,
                     errorStockMax = errorStockMax,
                     errorTipo = errorTipo
                 ))}
-        return listOf(errorNombre, errorCategoria, errorTipo, errorPrecio, errorStockMin, errorStockMax)
-            .all { it == null }
+        return listOf(
+            errorNombre, errorCategoria, errorTipo, errorPrecio,
+            errorStockMin, errorStockActual, errorStockMax
+        ).all { it == null }
     }
 
     private fun construirProducto(codigo: String): Producto {
@@ -101,6 +117,7 @@ class ProductoViewModel : ViewModel() {
             categoria = estado.categoria.trim(),
             precio = estado.precio.replace(',', '.').toDouble(),
             stockMin = estado.stockMin.toInt(),
+            stockActual = estado.stockActual.toInt(),   // antes tomaba stockMin por error
             stockMax = estado.stockMax.toInt(),
             tipo = estado.tipo.trim(),
             detalle = estado.detalle.trim())
@@ -113,10 +130,16 @@ class ProductoViewModel : ViewModel() {
         return producto
     }
 
-    // Devuelve el producto a eliminar (o null si el código no es válido)
+    // Borra el producto del repositorio y lo devuelve (o null si el código no es válido)
     fun eliminarProductoSiEsValido(): Producto? {
         if (!validarCodigo()) return null
-        val producto = InventarioRepository.buscarPorCodigo(_estadoFormulario.value.codigo.trim())
+
+        val codigo = _estadoFormulario.value.codigo.trim()
+        val producto = InventarioRepository.buscarPorCodigo(codigo) ?: return null
+
+        val eliminado = InventarioRepository.eliminarPorCodigo(codigo)
+        if (!eliminado) return null
+
         _estadoFormulario.value = FormularioProductoEstado()
         return producto
     }
