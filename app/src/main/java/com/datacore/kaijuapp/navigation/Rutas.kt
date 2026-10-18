@@ -8,7 +8,9 @@ sealed class Rutas(val ruta: String) {
         object Agregar     : Rutas("agregar")
         object Eliminar    : Rutas("eliminar")
         object Movimientos : Rutas("movimientos")
-
+        object Modificar : Rutas("modificar/{codigo}") {
+                fun crear(codigo: String) = "modificar/${android.net.Uri.encode(codigo)}"
+        }
         // Ruta con argumento: detalle_movimiento/{id}
         object DetalleMovimiento : Rutas("detalle_movimiento/{id}") {
                 fun crear(id: String) = "detalle_movimiento/$id"

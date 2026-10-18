@@ -1,6 +1,5 @@
 package com.datacore.kaijuapp.navigation
 
-import com.datacore.kaijuapp.model.Producto
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -14,28 +13,26 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.datacore.kaijuapp.notificaciones.NotificacionHelper
 import com.datacore.kaijuapp.ui.screen.PantallaAgregarProducto
+import com.datacore.kaijuapp.ui.screen.PantallaCatalogo
 import com.datacore.kaijuapp.ui.screen.PantallaDetallesMovimiento
-import com.datacore.kaijuapp.ui.screen.PantallaEliminarProducto
 import com.datacore.kaijuapp.ui.screen.PantallaLogin
 import com.datacore.kaijuapp.ui.screen.PantallaMenu
+import com.datacore.kaijuapp.ui.screen.PantallaModificarProducto
 import com.datacore.kaijuapp.ui.screen.PantallaMovimiento
-import com.datacore.kaijuapp.ui.screen.PantallaProducto
 import com.datacore.kaijuapp.viewmodel.InventarioViewModel
 import com.datacore.kaijuapp.viewmodel.MovimientoViewModel
 import com.datacore.kaijuapp.viewmodel.SesionViewModel
 
 @Composable
 fun AppNavHost() {
-    val navController = rememberNavController()
     // Se crean aquí para compartirlos entre pantallas
+    val navController = rememberNavController()
     val sesionViewModel: SesionViewModel = viewModel()
     val inventarioViewModel: InventarioViewModel = viewModel()
     val movimientoViewModel: MovimientoViewModel = viewModel()
-
     val productos by inventarioViewModel.productos.collectAsState()
     val movimientos by movimientoViewModel.movimientos.collectAsState()
     val usuario by sesionViewModel.usuarioActual.collectAsState()
-
     val context = LocalContext.current
     // Recalcula la alerta del producto con menor stock con la lista YA actualizada
     // (se usa .value y no `productos` porque este último aún tiene la lista vieja dentro del lambda)
@@ -44,7 +41,6 @@ fun AppNavHost() {
     }
 
     NavHost(navController = navController, startDestination = Rutas.Login.ruta) {
-
         composable(Rutas.Login.ruta) {
             PantallaLogin(
                 viewModel = sesionViewModel,
@@ -56,16 +52,13 @@ fun AppNavHost() {
                 }
             )
         }
-
         composable(Rutas.Menu.ruta) {
             PantallaMenu(
                 nombreUsuario = usuario?.nombre ?: "",
                 rol = usuario?.rol ?: "",
-                productos = productos,
                 onCatalogo = { navController.navigate(Rutas.Lista.ruta) },
-                onAgregar = { navController.navigate(Rutas.Agregar.ruta) },
-                onEliminar = { navController.navigate(Rutas.Eliminar.ruta) },
                 onMovimientos = { navController.navigate(Rutas.Movimientos.ruta) },
+                onUsuarios = null, // deshabilitado "(próximamente)"; pásale una lambda cuando exista
                 onCerrarSesion = {
                     sesionViewModel.cerrarSesion()
                     navController.navigate(Rutas.Login.ruta) {
@@ -74,16 +67,24 @@ fun AppNavHost() {
                 }
             )
         }
-
         composable(Rutas.Lista.ruta) {
-            PantallaProducto(
+            PantallaCatalogo(
                 productos = productos,
-                onAgregar = { navController.navigate(Rutas.Agregar.ruta) },
+                // Administrador y Encargado pueden agregar/modificar/eliminar
+                puedeEditar = usuario?.rol == "Administrador" || usuario?.rol == "EncargadoInventario",
                 onVolver = { navController.popBackStack() },
-                puedeAgregar = usuario?.rol == "EncargadoInventario"
+                onAgregar = { navController.navigate(Rutas.Agregar.ruta) },
+                onEditar = { navController.navigate(Rutas.Modificar.crear(it.codigo)) },
+                onEliminar = {
+                    inventarioViewModel.eliminar(it)
+                    NotificacionHelper.notificarAccion(
+                        context, "Producto eliminado",
+                        "Se eliminó el producto con ID: ${it.codigo}"
+                    )
+                    refrescarAlerta()
+                }
             )
         }
-
         composable(Rutas.Agregar.ruta) {
             PantallaAgregarProducto(
                 onGuardar = {
@@ -97,21 +98,29 @@ fun AppNavHost() {
                 onVolver = { navController.popBackStack() }
             )
         }
-
-        composable(Rutas.Eliminar.ruta) {
-            PantallaEliminarProducto(
-                onEliminar = {
-                    inventarioViewModel.eliminar(it)
-                    NotificacionHelper.notificarAccion(
-                        context, "Producto eliminado",
-                        "Se eliminó el producto con ID: ${it.codigo}"
-                    )
-                    refrescarAlerta()
-                },
-                onVolver = { navController.popBackStack() }
-            )
+        composable(
+            route = Rutas.Modificar.ruta,
+            arguments = listOf(navArgument("codigo") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val codigo = backStackEntry.arguments?.getString("codigo")
+            val producto = productos.firstOrNull { it.codigo == codigo }
+            if (producto != null) {
+                PantallaModificarProducto(
+                    producto = producto,
+                    onGuardar = {
+                        inventarioViewModel.actualizar(it)
+                        NotificacionHelper.notificarAccion(
+                            context, "Producto modificado",
+                            "Se modificó el producto con ID: ${it.codigo}"
+                        )
+                        refrescarAlerta()
+                    },
+                    onVolver = { navController.popBackStack() }
+                )
+            } else {
+                LaunchedEffect(Unit) { navController.popBackStack() }
+            }
         }
-
         composable(Rutas.Movimientos.ruta) {
             PantallaMovimiento(
                 movimientos = movimientos,
@@ -119,7 +128,6 @@ fun AppNavHost() {
                 onVolver = { navController.popBackStack() }
             )
         }
-
         composable(
             route = Rutas.DetalleMovimiento.ruta,
             arguments = listOf(navArgument("id") { type = NavType.StringType })
@@ -129,8 +137,7 @@ fun AppNavHost() {
             if (movimiento != null) {
                 PantallaDetallesMovimiento(
                     movimiento = movimiento,
-                    onVolver = { navController.popBackStack() }
-                )
+                    onVolver = { navController.popBackStack() })
             } else {
                 // Si no existe, vuelve atrás en vez de mostrar una pantalla rota
                 LaunchedEffect(Unit) { navController.popBackStack() }

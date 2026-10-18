@@ -70,7 +70,7 @@ class ProductoViewModel : ViewModel() {
         val errorPrecio = when {
             estado.precio.isBlank() -> "El precio es obligatorio"
             precio == null -> "El precio debe ser un número"
-            precio <= 0 -> "El precio debe ser mayor a 0"
+            precio.isNaN() || precio.isInfinite() -> "El precio debe ser un número válido"
             else -> null }
         val errorStockMin = when {
             estado.stockMin.isBlank() -> "El stock mínimo es obligatorio"
@@ -153,4 +153,8 @@ class ProductoViewModel : ViewModel() {
         _estadoFormulario.value = FormularioProductoEstado()
         return producto
     }
+    fun limpiarFormulario() { _estadoFormulario.value = FormularioProductoEstado() }
+
+    // Para eliminar desde el catálogo, sin tipear el código
+    fun eliminar(producto: Producto): Boolean = InventarioRepository.eliminarPorCodigo(producto.codigo)
 }

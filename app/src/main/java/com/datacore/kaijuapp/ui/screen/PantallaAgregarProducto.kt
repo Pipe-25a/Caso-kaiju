@@ -23,10 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.datacore.kaijuapp.model.Producto
 import com.datacore.kaijuapp.viewmodel.ProductoViewModel
-/*
-Tuve que rehacer este parte del codigo porque se al momento de compilar da error
-
-*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaAgregarProducto(
@@ -35,7 +31,6 @@ fun PantallaAgregarProducto(
     viewModel: ProductoViewModel = viewModel()
 ) {
     val estado by viewModel.estadoFormulario.collectAsState()
-
     Scaffold(
         topBar = { TopAppBar(title = { Text("Agregar producto") }) }
     ) { innerPadding ->
@@ -54,7 +49,6 @@ fun PantallaAgregarProducto(
             CampoTexto(estado.stockMax, viewModel::actualizarStockMax, "Stock máximo", estado.errores.errorStockMax, KeyboardType.Number)
             CampoTexto(estado.tipo, viewModel::actualizarTipo, "Tipo", estado.errores.errorTipo)
             CampoTexto(estado.detalle, viewModel::actualizarDetalle, "Detalle (talla, color, lote...)", null)
-
             Button(
                 onClick = {
                     val producto = viewModel.crearProductoSiEsValido()
@@ -65,7 +59,6 @@ fun PantallaAgregarProducto(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) { Text("Guardar") }
-
             OutlinedButton(onClick = onVolver, modifier = Modifier.fillMaxWidth()) {
                 Text("Cancelar")
             }

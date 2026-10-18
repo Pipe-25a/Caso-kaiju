@@ -1,28 +1,32 @@
 package com.datacore.kaijuapp.repository
 import com.datacore.kaijuapp.model.Producto
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 object InventarioRepository {
-    private val catalogo: MutableList<Producto> = DatosDePrueba.productos.toMutableList()
-    fun obtenerTodo(): List<Producto> = catalogo.toList()
-    fun buscarPorCodigo(codigo: String): Producto? =
-        catalogo.find { it.codigo == codigo }
+    private val _productos = MutableStateFlow(DatosDePrueba.productos)
+    val productos: StateFlow<List<Producto>> = _productos.asStateFlow()
 
-    fun agregarProducto(producto: Producto): Producto {
-        val nuevoCodigo =
-            ((catalogo.mapNotNull { it.codigo.toIntOrNull() }.maxOrNull() ?: 0) + 1).toString()
-        val nuevo = producto.copy(codigo = nuevoCodigo)
-        catalogo.add(nuevo)
+    fun buscarPorCodigo(codigo: String): Producto? =
+        _productos.value.firstOrNull { it.codigo == codigo }
+
+    // Asigna el código y devuelve el producto ya guardado
+    fun agregar(p: Producto): Producto {
+        val siguiente = (_productos.value.mapNotNull { it.codigo.toIntOrNull() }.maxOrNull() ?: 0) + 1
+        val nuevo = p.copy(codigo = siguiente.toString())
+        _productos.update { it + nuevo }
         return nuevo
     }
 
-    fun actualizarProducto(producto: Producto): Boolean {
-        val indice = catalogo.indexOfFirst { it.codigo == producto.codigo }
-        if (indice == -1) return false
-        catalogo[indice] = producto
-        return true
+    fun actualizar(p: Producto) {
+        _productos.update { lista -> lista.map { if (it.codigo == p.codigo) p else it } }
     }
 
-    fun eliminarPorCodigo(codigo: String): Boolean =
-        catalogo.removeIf { it.codigo == codigo }
-
+    fun eliminarPorCodigo(codigo: String): Boolean {
+        val existe = buscarPorCodigo(codigo) != null
+        _productos.update { lista -> lista.filterNot { it.codigo == codigo } }
+        return existe
+    }
 }

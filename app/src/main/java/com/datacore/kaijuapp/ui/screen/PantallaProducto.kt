@@ -21,8 +21,10 @@ import com.datacore.kaijuapp.ui.components.ListaProducto
 fun PantallaProducto(
     productos: List<Producto>,
     onAgregar: () -> Unit,
+    onEditar: (Producto) -> Unit,
     onVolver: () -> Unit,
-    puedeAgregar: Boolean = true   // solo el Encargado de Inventario ve el botón +
+    puedeAgregar: Boolean = true,   // solo el Encargado de Inventario ve el botón +
+    puedeEditar: Boolean = true     // y el botón de editar en cada tarjeta
 ) {
     Scaffold(
         topBar = {
@@ -45,7 +47,8 @@ fun PantallaProducto(
     ) { innerPadding ->
         ListaProducto(
             productos = productos,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            onEditar = if (puedeEditar) onEditar else null
         )
     }
 }
