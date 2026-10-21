@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.datacore.kaijuapp.model.Producto
+import com.datacore.kaijuapp.ui.components.SeccionFoto
 import com.datacore.kaijuapp.viewmodel.ProductoViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +70,11 @@ fun PantallaModificarProducto(
                 .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            SeccionFoto(
+                fotoUri = estado.fotoUri,
+                onFotoSeleccionada = viewModel::actualizarFotoUri,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
             // ID: generado automáticamente, no editable
             Campo(
                 "ID", estado.codigo, {}, errores.errorCodigo,

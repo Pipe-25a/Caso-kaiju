@@ -11,6 +11,7 @@ data class FormularioProductoEstado(
     val stockMax: String = "",
     val tipo: String = "",
     val detalle: String = "",
+    val fotoUri: String? = null,
     val errores: ErroresProducto = ErroresProducto()
 )
 data class ErroresProducto(

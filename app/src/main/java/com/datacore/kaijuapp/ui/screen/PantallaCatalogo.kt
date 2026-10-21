@@ -15,8 +15,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.datacore.kaijuapp.model.Producto
+import com.datacore.kaijuapp.ui.components.FotoProducto
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -160,8 +162,18 @@ private fun TarjetaCatalogo(
             modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            FotoProducto(fotoUri = producto.fotoUri, modifier = Modifier.size(80.dp))
+            Spacer(Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(producto.nombre, style = MaterialTheme.typography.titleMedium)
+                if (producto.descripcion.isNotBlank()) {
+                    Text(
+                        producto.descripcion,
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 Text("Código: ${producto.codigo} · ${producto.tipo}", style = MaterialTheme.typography.bodySmall)
                 Text("$precio · Stock: ${producto.stockActual}", style = MaterialTheme.typography.bodyMedium)
             }

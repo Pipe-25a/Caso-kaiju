@@ -1,6 +1,7 @@
-package com.datacore.kaijuapp.notificaciones
+package com.datacore.kaijuapp.naturalresources.notificaciones
 
 import android.Manifest
+import android.R
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -52,7 +53,7 @@ object NotificacionHelper {
             context, 0, intent, PendingIntent.FLAG_IMMUTABLE
         )
         val notificacion = NotificationCompat.Builder(context, canal)
-            .setSmallIcon(android.R.drawable.ic_dialog_info) // cámbialo luego por un ícono tuyo
+            .setSmallIcon(R.drawable.ic_dialog_info) // cámbialo luego por un ícono tuyo
             .setContentTitle(titulo)
             .setContentText(texto)
             .setStyle(NotificationCompat.BigTextStyle().bigText(texto))

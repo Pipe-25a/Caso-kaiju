@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.datacore.kaijuapp.model.Producto
+import com.datacore.kaijuapp.ui.components.SeccionFoto
 import com.datacore.kaijuapp.viewmodel.ProductoViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,11 +42,13 @@ fun PantallaAgregarProducto(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            SeccionFoto(estado.fotoUri, viewModel::actualizarFotoUri)
             CampoTexto(estado.nombre, viewModel::actualizarNombre, "Nombre", estado.errores.errorNombre)
             CampoTexto(estado.descripcion, viewModel::actualizarDescripcion, "Descripción", null)
             CampoTexto(estado.categoria, viewModel::actualizarCategoria, "Categoría", estado.errores.errorCategoria)
             CampoTexto(estado.precio, viewModel::actualizarPrecio, "Precio", estado.errores.errorPrecio, KeyboardType.Decimal)
             CampoTexto(estado.stockMin, viewModel::actualizarStockMin, "Stock mínimo", estado.errores.errorStockMin, KeyboardType.Number)
+            CampoTexto(estado.stockActual, viewModel::actualizarStockActual, "Stock actual", estado.errores.errorStockActual, KeyboardType.Number)
             CampoTexto(estado.stockMax, viewModel::actualizarStockMax, "Stock máximo", estado.errores.errorStockMax, KeyboardType.Number)
             CampoTexto(estado.tipo, viewModel::actualizarTipo, "Tipo", estado.errores.errorTipo)
             CampoTexto(estado.detalle, viewModel::actualizarDetalle, "Detalle (talla, color, lote...)", null)

@@ -27,6 +27,7 @@ class ProductoViewModel : ViewModel() {
     fun actualizarStockMax(valor: String) = _estadoFormulario.update { it.copy(stockMax = valor) }
     fun actualizarTipo(valor: String) = _estadoFormulario.update { it.copy(tipo = valor) }
     fun actualizarDetalle(valor: String) = _estadoFormulario.update { it.copy(detalle = valor) }
+    fun actualizarFotoUri(uri: String?) = _estadoFormulario.update { it.copy(fotoUri = uri) }
 
     // Rellena el formulario con un producto existente (para la pantalla de modificar)
     fun cargarProducto(p: Producto) {
@@ -40,7 +41,8 @@ class ProductoViewModel : ViewModel() {
             stockActual = p.stockActual.toString(),
             stockMax = p.stockMax.toString(),
             tipo = p.tipo,
-            detalle = p.detalle
+            detalle = p.detalle,
+            fotoUri = p.fotoUri
         )
     }
 
@@ -120,7 +122,8 @@ class ProductoViewModel : ViewModel() {
             stockActual = estado.stockActual.toInt(),   // antes tomaba stockMin por error
             stockMax = estado.stockMax.toInt(),
             tipo = estado.tipo.trim(),
-            detalle = estado.detalle.trim())
+            detalle = estado.detalle.trim(),
+            fotoUri = estado.fotoUri)
     }
 
     fun crearProductoSiEsValido(): Producto? {

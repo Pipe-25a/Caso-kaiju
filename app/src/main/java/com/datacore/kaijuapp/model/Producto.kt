@@ -10,5 +10,6 @@ data class Producto (
     val stockActual: Int,
     val stockMax:Int,
     val tipo: String,
-    val detalle:String
+    val detalle:String,
+    val fotoUri: String? = null   // foto elegida en la galería (opcional)
 ){}

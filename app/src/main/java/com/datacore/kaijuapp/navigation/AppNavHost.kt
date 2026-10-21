@@ -11,7 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.datacore.kaijuapp.notificaciones.NotificacionHelper
+import com.datacore.kaijuapp.naturalresources.notificaciones.NotificacionHelper
 import com.datacore.kaijuapp.ui.screen.PantallaAgregarProducto
 import com.datacore.kaijuapp.ui.screen.PantallaCatalogo
 import com.datacore.kaijuapp.ui.screen.PantallaDetallesMovimiento
