@@ -12,10 +12,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,10 +28,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.datacore.kaijuapp.ui.components.HomeHeader
+import com.datacore.kaijuapp.ui.theme.KaijuOnDark
+import com.datacore.kaijuapp.ui.theme.KaijuPurple
+import com.datacore.kaijuapp.ui.theme.KaijuYellow
 import com.datacore.kaijuapp.viewmodel.SesionViewModel
 
 @Composable
@@ -40,7 +47,7 @@ fun PantallaLogin(
     val estado by viewModel.formulario.collectAsState()
     var mostrarClave by remember { mutableStateOf(false) }
 
-    Scaffold { innerPadding ->
+    Scaffold(containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -49,9 +56,9 @@ fun PantallaLogin(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Kaiju App", style = MaterialTheme.typography.headlineLarge)
-            Text("Inicia sesión para continuar", style = MaterialTheme.typography.bodyMedium)
-            Spacer(Modifier.height(32.dp))
+            HomeHeader()
+            Spacer(Modifier.height(16.dp))
+
             OutlinedTextField(
                 value = estado.usuario,
                 onValueChange = viewModel::actualizarUsuario,
@@ -59,9 +66,18 @@ fun PantallaLogin(
                 isError = estado.errores.errorUsuario != null,
                 supportingText = { estado.errores.errorUsuario?.let { Text(it) } },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = KaijuYellow,
+                    unfocusedBorderColor = KaijuPurple,
+                    focusedLabelColor = KaijuYellow,
+                    cursorColor = KaijuYellow,
+                    focusedTextColor = KaijuOnDark,
+                    unfocusedTextColor = KaijuOnDark
+                )
             )
             Spacer(Modifier.height(8.dp))
+
             OutlinedTextField(
                 value = estado.clave,
                 onValueChange = viewModel::actualizarClave,
@@ -78,23 +94,38 @@ fun PantallaLogin(
                             imageVector = if (mostrarClave) Icons.Filled.VisibilityOff
                             else Icons.Filled.Visibility,
                             contentDescription = if (mostrarClave) "Ocultar contraseña"
-                            else "Mostrar contraseña"
+                            else "Mostrar contraseña",
+                            tint = KaijuYellow
                         )
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = KaijuYellow,
+                    unfocusedBorderColor = KaijuPurple,
+                    focusedLabelColor = KaijuYellow,
+                    cursorColor = KaijuYellow,
+                    focusedTextColor = KaijuOnDark,
+                    unfocusedTextColor = KaijuOnDark
+                )
             )
-            // Error general: credenciales incorrectas
+
             estado.errores.errorGeneral?.let {
                 Spacer(Modifier.height(8.dp))
                 Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
             }
+
             Spacer(Modifier.height(24.dp))
+
             Button(
                 onClick = { if (viewModel.iniciarSesion()) onLoginExitoso() },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = KaijuYellow,
+                    contentColor = MaterialTheme.colorScheme.onTertiary
+                )
             ) {
-                Text("Iniciar sesión")
+                Text("Iniciar sesión", fontWeight = FontWeight.Bold)
             }
         }
     }

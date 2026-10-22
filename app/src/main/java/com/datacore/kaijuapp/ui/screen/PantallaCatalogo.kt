@@ -1,5 +1,6 @@
 package com.datacore.kaijuapp.ui.screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -15,10 +16,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.datacore.kaijuapp.model.Producto
 import com.datacore.kaijuapp.ui.components.FotoProducto
+import com.datacore.kaijuapp.ui.theme.*
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -55,17 +58,29 @@ fun PantallaCatalogo(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Catálogo") },
+                title = { Text("Catálogo", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onVolver) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = KaijuYellow
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = KaijuDarkPurple,
+                    titleContentColor = KaijuYellow
+                )
             )
         },
         floatingActionButton = {
             if (puedeEditar) {
-                FloatingActionButton(onClick = onAgregar) {
+                FloatingActionButton(
+                    onClick = onAgregar,
+                    containerColor = KaijuYellow,
+                    contentColor = MaterialTheme.colorScheme.onTertiary
+                ) {
                     Icon(Icons.Default.Add, contentDescription = "Agregar producto")
                 }
             }
@@ -157,7 +172,14 @@ private fun TarjetaCatalogo(
 ) {
     val precio = NumberFormat.getCurrencyInstance(Locale("es", "CL")).format(producto.precio)
 
-    Card(modifier = Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = KaijuDarkPurple,
+            contentColor = KaijuOnDark
+        ),
+        border = BorderStroke(1.dp, KaijuPurple)
+    ) {
         Row(
             modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -165,24 +187,39 @@ private fun TarjetaCatalogo(
             FotoProducto(fotoUri = producto.fotoUri, modifier = Modifier.size(80.dp))
             Spacer(Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(producto.nombre, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    producto.nombre,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = KaijuOnDark,
+                    fontWeight = FontWeight.Bold
+                )
                 if (producto.descripcion.isNotBlank()) {
                     Text(
                         producto.descripcion,
                         style = MaterialTheme.typography.bodySmall,
+                        color = KaijuGrayText,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                Text("Código: ${producto.codigo} · ${producto.tipo}", style = MaterialTheme.typography.bodySmall)
-                Text("$precio · Stock: ${producto.stockActual}", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    "Código: ${producto.codigo} · ${producto.tipo}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = KaijuGrayText
+                )
+                Text(
+                    "$precio · Stock: ${producto.stockActual}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = KaijuYellow,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
             if (puedeEditar) {
                 IconButton(onClick = onEditar) {
-                    Icon(Icons.Default.Edit, contentDescription = "Modificar")
+                    Icon(Icons.Default.Edit, contentDescription = "Modificar", tint = KaijuYellow)
                 }
                 IconButton(onClick = onEliminar) {
-                    Icon(Icons.Default.Delete, contentDescription = "Eliminar")
+                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = KaijuYellow)
                 }
             }
         }
@@ -192,6 +229,6 @@ private fun TarjetaCatalogo(
 @Composable
 private fun MensajeVacio(texto: String) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(texto, style = MaterialTheme.typography.bodyLarge)
+        Text(texto, style = MaterialTheme.typography.bodyLarge, color = KaijuGrayText)
     }
 }

@@ -9,10 +9,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import com.datacore.kaijuapp.model.Movimiento
 import com.datacore.kaijuapp.ui.components.ListaMovimiento
+import com.datacore.kaijuapp.ui.theme.KaijuDarkPurple
+import com.datacore.kaijuapp.ui.theme.KaijuYellow
 
 // Pantalla donde se ven todos los movimientos.
 // Al tocar uno se abre la pantalla de detalles.
@@ -26,12 +30,20 @@ fun PantallaMovimiento(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Movimientos") },
+                title = { Text("Movimientos", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onVolver) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = KaijuYellow
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = KaijuDarkPurple,
+                    titleContentColor = KaijuYellow
+                )
             )
         }
     ) { innerPadding ->

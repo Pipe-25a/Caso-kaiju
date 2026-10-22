@@ -2,10 +2,13 @@ package com.datacore.kaijuapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Paleta Kaiju: morado, negro y amarillo
+val KaijuBlack       = Color(0xFF0D0D0D)
+val KaijuDarkPurple  = Color(0xFF1A0F2E)
+val KaijuPurple      = Color(0xFF6A2FB8)
+val KaijuPurpleLight = Color(0xFF9B5DE5)
+val KaijuYellow      = Color(0xFFFFC300)
+val KaijuYellowSoft  = Color(0xFFFFE066)
+val KaijuOnDark      = Color(0xFFF2F2F2)
+val KaijuGrayText    = Color(0xFFB0A8C0)
+val KaijuError       = Color(0xFFFF6B6B)

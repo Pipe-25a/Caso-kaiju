@@ -1,5 +1,6 @@
 package com.datacore.kaijuapp.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -18,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.datacore.kaijuapp.naturalresources.galeria.rememberSelectorFotos
+import com.datacore.kaijuapp.ui.theme.KaijuPurpleLight
 
 /** Miniatura del producto (catálogo). Si no hay foto, muestra un recuadro "Sin foto". */
 @Composable
@@ -60,7 +63,9 @@ fun SeccionFoto(
         )
         OutlinedButton(
             onClick = { selector.abrirGaleria() },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            border = BorderStroke(1.dp, KaijuPurpleLight),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = KaijuPurpleLight)
         ) {
             Text(if (fotoUri == null) "Subir foto" else "Cambiar foto")
         }
