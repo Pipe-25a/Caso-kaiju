@@ -1,0 +1,30 @@
+package com.datacore.kaijuapp.data.local
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface ProductoDao {
+
+    @Query("SELECT * FROM productos")
+    fun listarTodos(): Flow<List<ProductoEntity>>
+
+    @Query("SELECT * FROM productos WHERE codigo = :codigo")
+    suspend fun buscarPorCodigo(codigo: String): ProductoEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertar(producto: ProductoEntity)
+
+    @Update
+    suspend fun actualizar(producto: ProductoEntity)
+
+    @Query("DELETE FROM productos WHERE codigo = :codigo")
+    suspend fun eliminarPorCodigo(codigo: String)
+
+    @Query("SELECT MAX(CAST(codigo AS INTEGER)) FROM productos")
+    suspend fun obtenerMayorCodigoNumerico(): Int?
+}
