@@ -79,7 +79,7 @@ fun AppNavHost(
             PantallaCatalogo(
                 productos = productos,
                 // Administrador y Encargado pueden agregar/modificar/eliminar
-                puedeEditar = usuario?.rol == "Administrador" || usuario?.rol == "EncargadoInventario",
+                puedeEditar = usuario?.rol == "Administrador" || usuario?.rol == "Encargado",
                 onVolver = { navController.popBackStack() },
                 onAgregar = { navController.navigate(Rutas.Agregar.ruta) },
                 onEditar = { navController.navigate(Rutas.Modificar.crear(it.codigo)) },
