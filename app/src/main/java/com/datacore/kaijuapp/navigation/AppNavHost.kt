@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.datacore.kaijuapp.naturalresources.notificaciones.NotificacionHelper
 import com.datacore.kaijuapp.ui.screen.PantallaAgregarProducto
@@ -24,12 +24,16 @@ import com.datacore.kaijuapp.viewmodel.MovimientoViewModel
 import com.datacore.kaijuapp.viewmodel.SesionViewModel
 
 @Composable
-fun AppNavHost() {
-    // Se crean aquí para compartirlos entre pantallas
-    val navController = rememberNavController()
-    val sesionViewModel: SesionViewModel = viewModel()
-    val inventarioViewModel: InventarioViewModel = viewModel()
-    val movimientoViewModel: MovimientoViewModel = viewModel()
+fun AppNavHost(
+    // El NavController y los ViewModels ahora se crean en MainScreen
+    // y se reciben aquí, así la barra inferior y el NavHost comparten lo mismo
+    navController: NavHostController,
+    sesionViewModel: SesionViewModel,
+    inventarioViewModel: InventarioViewModel,
+    movimientoViewModel: MovimientoViewModel,
+    // Aplica el padding del Scaffold para que la barra no tape el contenido
+    modifier: Modifier = Modifier
+) {
     val productos by inventarioViewModel.productos.collectAsState()
     val movimientos by movimientoViewModel.movimientos.collectAsState()
     val usuario by sesionViewModel.usuarioActual.collectAsState()
@@ -40,7 +44,11 @@ fun AppNavHost() {
         NotificacionHelper.actualizarAlertaStock(context, inventarioViewModel.productos.value)
     }
 
-    NavHost(navController = navController, startDestination = Rutas.Login.ruta) {
+    NavHost(
+        navController = navController,
+        startDestination = Rutas.Login.ruta,
+        modifier = modifier
+    ) {
         composable(Rutas.Login.ruta) {
             PantallaLogin(
                 viewModel = sesionViewModel,
