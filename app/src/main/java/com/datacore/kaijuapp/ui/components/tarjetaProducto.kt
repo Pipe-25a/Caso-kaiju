@@ -42,7 +42,7 @@ fun TarjetaProducto(
         }
     }
 }
-
+//no se si borrar esto
 @Preview(showBackground = true)
 @Composable
 fun PreviewTarjetaProducto() {

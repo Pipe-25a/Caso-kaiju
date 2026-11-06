@@ -10,6 +10,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 17.0,
             stockMin = 1,
+            stockActual = 2,
             stockMax = 10,
             tipo = "CamisetaSinMangas",
             detalle = ""
@@ -21,6 +22,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 16.0,
             stockMin = 1,
+            stockActual = 6,
             stockMax = 10,
             tipo = "pantaloneslargos",
             detalle = ""
@@ -32,6 +34,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 14.0,
             stockMin = 1,
+            stockActual = 9,
             stockMax = 10,
             tipo = "PoleronconGorro",
             detalle = ""
@@ -43,6 +46,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 13.0,
             stockMin = 1,
+            stockActual = 8,
             stockMax = 10,
             tipo = "GuantesdeNieve",
             detalle = ""
@@ -54,6 +58,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 15.0,
             stockMin = 1,
+            stockActual = 7,
             stockMax = 10,
             tipo = "CalcetinesDeportivos",
             detalle = ""
@@ -65,6 +70,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 20.0,
             stockMin = 1,
+            stockActual = 5,
             stockMax = 10,
             tipo = "ShortsDeVerano",
             detalle = ""
@@ -76,6 +82,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 40.0,
             stockMin = 1,
+            stockActual = 9,
             stockMax = 10,
             tipo = "ZapatillasDeportivas",
             detalle = ""
@@ -87,6 +94,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 30.0,
             stockMin = 1,
+            stockActual = 7,
             stockMax = 10,
             tipo = "ZapatosFormales",
             detalle = ""
@@ -98,6 +106,7 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 20.0,
             stockMin = 1,
+            stockActual = 6,
             stockMax = 10,
             tipo = "BufandaLarga",
             detalle = ""
@@ -109,14 +118,37 @@ object DatosDePrueba {
             categoria = "ropa",
             precio = 10.0,
             stockMin = 1,
+            stockActual = 4,
             stockMax = 10,
             tipo = "GorroInvierno",
             detalle = ""
         )
     )
     val usuarios: List<Usuario> = listOf(
-        Usuario(id = "1", nombre = "Jose", rol = "Administrador", clave = "admin123"),
-        Usuario(id = "2", nombre = "Miguel", rol = "Vendedor", clave ="ventas123" ),
-        Usuario(id = "3", nombre = "Daniel", rol = "EncargadoInventario", clave = "stock123")
+        Usuario(id = "1", nombre = "Admin", rol = "Administrador", clave = "admin1"),
+        Usuario(id = "2", nombre = "Vendedor", rol = "Vendedor", clave ="venta1" ),
+        Usuario(id = "3", nombre = "Encargado", rol = "Encargado", clave = "encargado1")
     )
+    val movimientos: List<Movimiento> = listOf(
+        Movimiento(
+            id = "1",
+            codigoProducto = "5",
+            tipo = "Sin Tipo",
+            cantidad = 10,
+            motivo = "Sin Detalle",
+            fecha = "12/10/2026",
+            usuario = "Vendedor"
+        ),
+        Movimiento(
+            id = "2",
+            codigoProducto = "25",
+            tipo = "Sin Tipo",
+            cantidad = 3,
+            motivo = "Sin Detalle",
+            fecha = "13/10/2026",
+            usuario = "Vendedor"
+        )
+    )
+
+
 }

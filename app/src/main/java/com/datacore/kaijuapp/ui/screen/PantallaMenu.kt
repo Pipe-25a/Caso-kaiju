@@ -1,88 +1,117 @@
 package com.datacore.kaijuapp.ui.screen
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import android.Manifest
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
-import com.datacore.kaijuapp.notificaciones.NotificacionHelper
-import com.datacore.kaijuapp.repository.DatosDePrueba
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.datacore.kaijuapp.data.remote.PokeApiClient
+import com.datacore.kaijuapp.repository.PokemonRepository
+import com.datacore.kaijuapp.ui.components.HomeHeader
+import com.datacore.kaijuapp.ui.components.KaijuEasterEggDialog
+import com.datacore.kaijuapp.ui.theme.*
+import com.datacore.kaijuapp.viewmodel.KaijuEasterEggViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaMenu(
     nombreUsuario: String,
     rol: String,
-    onProductos: () -> Unit,
-    onAgregar: () -> Unit,
-    onCerrarSesion: () -> Unit
-) {
-    val context = LocalContext.current
-    val launcherPermiso = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { /* aquí podrías avisar si el usuario lo rechazó */ }
-
-    LaunchedEffect(Unit) {
-        if (!NotificacionHelper.tienePermiso(context)) {
-            launcherPermiso.launch(Manifest.permission.POST_NOTIFICATIONS)
+    onCatalogo: () -> Unit,
+    onMovimientos: () -> Unit,
+    onUsuarios: (() -> Unit)? = null,
+    onCerrarSesion: () -> Unit,
+    // NUEVO: ViewModel del Easter egg (no cambia cómo llamas a PantallaMenu)
+    easterEggVm: KaijuEasterEggViewModel = viewModel(
+        factory = viewModelFactory {
+            initializer { KaijuEasterEggViewModel(PokemonRepository(PokeApiClient.api)) }
         }
-    }
+    )
+) {
+    val easterEgg by easterEggVm.estado.collectAsState()
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Menú principal") }) }
-    ) { innerPadding ->
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            TopAppBar(
+                title = { Text("Menú principal", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = KaijuDarkPurple,
+                    titleContentColor = KaijuYellow,
+                    actionIconContentColor = KaijuYellow
+                ),
+                actions = {
+                    TextButton(onClick = onCerrarSesion) {
+                        Text("Cerrar sesión", color = KaijuYellow)
+                    } }) }
+    ) { padding ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(padding)
+                .padding(horizontal = 16.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Hola, $nombreUsuario", style = MaterialTheme.typography.headlineSmall)
-            Text("Rol: $rol", style = MaterialTheme.typography.bodyMedium)
-            Spacer(Modifier.height(16.dp))
-
-            Button(onClick = onProductos, modifier = Modifier.fillMaxWidth()) {
-                Text("Ver productos")
-            }
-            Button(onClick = onAgregar, modifier = Modifier.fillMaxWidth()) {
-                Text("Agregar producto")
-            }
-            // Placeholder hasta que exista la pantalla de movimientos
-            Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) {
-                Text("Movimientos (próximamente)")
-            }
-            //notificacion prueba
-            OutlinedButton(
-                onClick = {
-                    NotificacionHelper.mostrarStockBajo(context, DatosDePrueba.productos.first())
-                },
-                modifier = Modifier.fillMaxWidth()
+            Box(
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { easterEggVm.onEasterEggClick() }
             ) {
-                Text("Probar notificación")
+                HomeHeader()
             }
-
-
-            Spacer(Modifier.weight(1f))  // empuja "Cerrar sesión" hacia abajo
-
-            OutlinedButton(onClick = onCerrarSesion, modifier = Modifier.fillMaxWidth()) {
-                Text("Cerrar sesión")
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "Hola, $nombreUsuario",
+                style = MaterialTheme.typography.headlineMedium,
+                color = KaijuOnDark
+            )
+            Text(
+                text = "Rol: $rol",
+                style = MaterialTheme.typography.bodyMedium,
+                color = KaijuYellow
+            )
+            Spacer(Modifier.height(16.dp))
+            Button(
+                onClick = onCatalogo,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = KaijuYellow,
+                    contentColor = MaterialTheme.colorScheme.onTertiary
+                )
+            ) { Text("Catálogo", fontWeight = FontWeight.Bold) }
+            Button(
+                onClick = onMovimientos,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = KaijuPurple,
+                    contentColor = KaijuOnDark
+                )
+            ) { Text("Movimientos") }
+            OutlinedButton(
+                onClick = { onUsuarios?.invoke() },
+                enabled = onUsuarios != null,
+                modifier = Modifier.fillMaxWidth(),
+                border = BorderStroke(1.dp, KaijuPurpleLight),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = KaijuPurpleLight)
+            ) {
+                Text(if (onUsuarios != null) "Usuarios" else "Usuarios (próximamente)")
             }
         }
     }
+    KaijuEasterEggDialog(
+        estado = easterEgg,
+        onReintentar = easterEggVm::invocarKaiju,
+        onCerrar = easterEggVm::cerrar
+    )
 }
